@@ -34,6 +34,9 @@ jobs:
         set -e
         mismatched_dirs=()
         details=""
+
+        echo "current list of directories"
+        ls -la
         echo "Checking directories for image tag mismatches..."
         for dir in */; do
           if [[ -d "$dir/base" && -d "$dir/patches" && -d "$dir/patches/dev" && -d "$dir/patches/prd" ]]; then
