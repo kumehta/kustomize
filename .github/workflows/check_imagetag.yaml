@@ -70,7 +70,7 @@ jobs:
         done
         if [ ${#mismatched_dirs[@]} -gt 0 ]; then
           printf '%s\n' "${mismatched_dirs[@]}"
-          printf '%s\n' "${details}"
+          printf '%b\n' "${details}"
 
         else
           echo "No mismatches found, or all missing images sections were skipped."
