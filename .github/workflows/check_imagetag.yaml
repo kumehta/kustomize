@@ -39,6 +39,7 @@ jobs:
         ls -la
         echo "Checking directories for image tag mismatches..."
         for dir in */; do
+          dir="${dir%/}"
           if [[ -d "$dir/base" && -d "$dir/patches" && -d "$dir/patches/dev" && -d "$dir/patches/prd" ]]; then
             echo "Analyzing $dir"
             dev_yaml="$dir/patches/dev/kustomization.yaml"
