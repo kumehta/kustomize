@@ -64,17 +64,7 @@ jobs:
         if [ ${#mismatched_dirs[@]} -gt 0 ]; then
           printf '%s\n' "${mismatched_dirs[@]}"
           printf '%s\n' "${details}"
-#          DAYS_SINCE_LAST_COMMIT=$(( ($CURRENT_DATE - $LAST_COMMIT_DATE) / 86400 ))
-#          if [ $DAYS_SINCE_LAST_COMMIT -ge 3 ]; then
-#            echo "Sending mismatch details to Slack..."
-#            MESSAGE="Image tag mismatches found:\n$details"
-#            curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${MESSAGE}\"}" ${{ secrets.SLACK_WEBHOOK_URL }}
-#          else
-#            echo "Last commit is less than 3 days ago, no alert sent."
-#          fi
+
         else
           echo "No mismatches found, or all missing images sections were skipped."
         fi
-
-#    env:
-#      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
