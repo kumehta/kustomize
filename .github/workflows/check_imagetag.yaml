@@ -39,39 +39,29 @@ jobs:
         mismatched_dirs=()
         details=""
 
-        echo "current list of directories"
-        ls -la
         echo "Checking directories for image tag mismatches..."
         for dir in */; do
           dir="${dir%/}"
           if [[ -d "$dir/base" && -d "$dir/patches" && -d "$dir/patches/dev" && -d "$dir/patches/prd" ]]; then
             echo "Analyzing $dir"
             dev_yaml="$dir/patches/dev/kustomization.yaml"
-            echo "$dev_yaml"
             prd_yaml="$dir/patches/prd/kustomization.yaml"
-            echo "$prd_yaml"
             if [[ -f "$dev_yaml" && -f "$prd_yaml" ]]; then
               echo "If condition pass"
-              yq --version
               dev_images=$(yq e '.images[] | .name + "=" + .newTag' "$dev_yaml" | sort)
-              echo "$dev_images"
               prd_images=$(yq e '.images[] | .name + "=" + .newTag' "$prd_yaml" | sort)
-              echo "$prd_images"
               diff_result=$(diff <(echo "$dev_images") <(echo "$prd_images")|| true)
-              echo "diff result"
-              echo "$diff_result"
               if [[ "$diff_result" != "" ]]; then
                 echo "diff_result condition pass"
                 echo "Image tag mismatch in $dir:"
-                echo "$diff_result"
                 mismatched_dirs+=("$dir")
-                details+="In $dir:\n"
+                details+="In $dir:\\n"
                 while IFS= read -r line; do
                   if [[ "$line" =~ "<" ]]; then
                     image_name=$(echo "$line" | cut -d '=' -f 1 | tr -d '< ')
                     dev_tag=$(echo "$line" | cut -d '=' -f 2)
                     prd_tag=$(grep "$image_name=" <(echo "$prd_images") | cut -d '=' -f 2)
-                    details+="  - $image_name: $dev_tag in dev, $prd_tag in prd\n"
+                    details+="  - $image_name: $dev_tag in dev, $prd_tag in prd\\n"
                   fi
                 done <<< "$diff_result"
               fi
