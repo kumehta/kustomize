@@ -1,0 +1,5 @@
+images:
+  - name: github.io/backend
+    newTag: "v2"
+  - name: github.io/frontend
+    newTag: "v2"
