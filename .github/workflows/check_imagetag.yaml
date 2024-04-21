@@ -42,7 +42,9 @@ jobs:
           if [[ -d "$dir/base" && -d "$dir/patches" && -d "$dir/patches/dev" && -d "$dir/patches/prd" ]]; then
             echo "Analyzing $dir"
             dev_yaml="$dir/patches/dev/kustomization.yaml"
+            echo "$dev_yaml"
             prd_yaml="$dir/patches/prd/kustomization.yaml"
+            echo "$PRD_yaml"
             if [[ -f "$dev_yaml" && -f "$prd_yaml" ]]; then
               dev_images=$(yq e '.images[] | .name + "=" + .newTag' "$dev_yaml" | sort)
               prd_images=$(yq e '.images[] | .name + "=" + .newTag' "$prd_yaml" | sort)
