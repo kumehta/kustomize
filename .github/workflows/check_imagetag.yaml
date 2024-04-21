@@ -53,7 +53,10 @@ jobs:
               prd_images=$(yq e '.images[] | .name + "=" + .newTag' "$prd_yaml" | sort)
               echo "$prd_images"
               diff_result=$(diff <(echo "$dev_images") <(echo "$prd_images"))
+              echo "diff result"
+              echo "$diff_result"
               if [[ "$diff_result" != "" ]]; then
+                echo "diff_result condition pass"
                 echo "Image tag mismatch in $dir:"
                 echo "$diff_result"
                 mismatched_dirs+=("$dir")
