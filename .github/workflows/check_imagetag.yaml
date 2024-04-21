@@ -18,8 +18,9 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-pip diffutils
-        pip3 install yq
-
+        sudo wget https://github.com/mikefarah/yq/releases/download/v4.18.1/yq_linux_amd64 -O /usr/bin/yq
+        sudo chmod +x /usr/bin/yq
+        
     - name: Get last commit date
       run: |
         LAST_COMMIT_DATE=$(git log -1 --format=%cd --date=iso)
