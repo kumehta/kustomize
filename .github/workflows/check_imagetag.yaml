@@ -28,7 +28,7 @@ jobs:
         CURRENT_DATE=$(date +%s)
         echo "Current date: $CURRENT_DATE"
         echo "CURRENT_DATE=$CURRENT_DATE" >> $GITHUB_ENV
-
+        
     - name: Compare image tags in dev and prd
       run: |
         set -e
