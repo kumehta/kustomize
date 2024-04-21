@@ -51,6 +51,7 @@ jobs:
             echo "$prd_yaml"
             if [[ -f "$dev_yaml" && -f "$prd_yaml" ]]; then
               echo "If condition pass"
+              yq --version
               dev_images=$(yq e '.images[] | .name + "=" + .newTag' "$dev_yaml" | sort)
               echo "$dev_images"
               prd_images=$(yq e '.images[] | .name + "=" + .newTag' "$prd_yaml" | sort)
