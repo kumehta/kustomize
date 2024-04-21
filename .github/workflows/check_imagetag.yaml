@@ -45,7 +45,7 @@ jobs:
             dev_yaml="$dir/patches/dev/kustomization.yaml"
             echo "$dev_yaml"
             prd_yaml="$dir/patches/prd/kustomization.yaml"
-            echo "$PRD_yaml"
+            echo "$prd_yaml"
             if [[ -f "$dev_yaml" && -f "$prd_yaml" ]]; then
               dev_images=$(yq e '.images[] | .name + "=" + .newTag' "$dev_yaml" | sort)
               prd_images=$(yq e '.images[] | .name + "=" + .newTag' "$prd_yaml" | sort)
