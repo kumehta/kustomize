@@ -1,0 +1,77 @@
+Kunal Mehta
+DevOps Engineer
+
+Munich
+17662060627
+
+Experienced DevOps and Site Reliability Engineer specializing in cloud platforms, infrastructure automation, and continuous integration/continuous deployment (CI/CD) pipelines. Proven track record in enhancing operational efficiencies, migrating applications to cloud environments, and implementing robust monitoring solutions across various industries.
+
+PERSONAL INFORMATION
+  Address: , Munich, 80638
+  Nationality: 
+  Driving License: 
+  Hobbies: 
+
+SKILLS
+  ★★★★☆ Linux
+  ★★★★☆ Git
+  ★★★★☆ Terraform
+  ★★★★☆ Kubernetes
+  ★★★★☆ AWS
+  ★★★★☆ Azure
+  ★★★★☆ Python
+
+WORK EXPERIENCE
+  * April 2024 – Present
+    Site Reliability Engineer at Fernride GmbH, Munich
+      
+  Implementing CI/CD workflows using GitHub Actions, enhancing deployment processes and automation.
+  Managing and optimizing Grafana stacks for real-time monitoring and analytics, improving system observability and performance metrics.
+  Developing and maintaining infrastructure as code (IaC) using Terraform, ensuring scalable and efficient cloud infrastructure on Microsoft Azure.
+  Spearheading the integration of DevOps best practices and tools, contributing to the overall reliability and robustness of systems.
+
+
+  * May 2022 – March 2024
+    Site Reliability Engineer at PagoNxt Merchant Solutions, Munich
+      
+  Led the GitOps initiative using ArgoCD, Kustomize, GitLab, and Terraform, streamlining Infrastructure as Code (IaC) deployments.
+  Engineered comprehensive monitoring solutions utilizing Datadog integrated with GitOps for real-time system health insights.
+  Facilitated the seamless migration of key applications from on-premise systems to Microsoft Azure, enhancing scalability and reliability.
+  Developed CI pipelines in GitLab CI, improving build processes and deployment strategies.
+
+
+  * April 2021 – April 2022
+    Site Reliability Engineer at Varian Medical Systems, Pune
+      
+  Administered cloud infrastructure on Amazon AWS and Microsoft Azure, focusing on high availability and fault tolerance.
+  Managed CI/CD workflows using tools such as  Azure DevOps along with  Kubernetes-based orchestration.
+  Designed and implemented service level indicators (SLIs) and objectives (SLOs), and monitored them through Grafana for customer-facing services.
+  Prioritized and resolved incidents, ensuring minimal service disruption and maintaining high availability.
+
+
+  * July 2019 – March 2021
+    Senior Associate Consultant at Infosys Limited, Pune
+      
+  Developed Terraform scripts for managing Kubernetes clusters on AWS and Google Cloud Platform (GCP).
+  Configured and managed alerting mechanisms using Grafana and Opsgenie, directing notifications to appropriate channels.
+  Implemented and maintained CI/CD pipelines using Jenkins, integrated with security tools like Checkmarx and SonarQube.
+
+
+  * July 2017 – June 2019
+    Senior Analyst at Capgemini India, Mumbai
+      
+  Implemented Puppet for middleware application deployments across AIX and RHEL servers.
+  Customized Docker images for CI/CD tools, optimizing resource usage and streamlining deployment processes in Kubernetes environments.
+  Enhanced CI/CD pipelines using Jenkins and SonarQube, focusing on automation and quality assurance.
+
+
+
+EDUCATION
+  * August 2013 – May 2017
+    Dr. A.P.J. Abdul Kalam Technical University, Mathura B.Tech
+
+    Bachelor of Technology, Computer Science and Engineering
+
+REFERENCES
+  *  from 
+
