@@ -1,77 +1,21 @@
-name: Check Image Tags
-
+name: terraform
 on:
-  schedule:
-    # Runs at 11:00 AM UTC every Monday
-    - cron: '*/5 * * * *'
-  workflow_dispatch:
-
+  pull_request:
+  issue_comment:
+    types: [created]
 jobs:
-  image-tag-comparison:
+  changeset:
     runs-on: ubuntu-latest
-
+    if: github.event.issue.pull_request || (github.event.issue.pull_request && (contains(github.event.comment.body, 'terraform plan') || contains(github.event.comment.body, 'tf plan')))
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-
-    - name: Install yq (YAML Processor)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-pip diffutils
-        sudo wget https://github.com/mikefarah/yq/releases/download/v4.18.1/yq_linux_amd64 -O /usr/bin/yq
-        sudo chmod +x /usr/bin/yq
-        
-    - name: Get last commit date
-      run: |
-        LAST_COMMIT_DATE=$(git log -1 --format=%cd --date=iso)
-        echo "Last commit date: $LAST_COMMIT_DATE"
-        echo "LAST_COMMIT_DATE=$(date -d "$LAST_COMMIT_DATE" +%s)" >> $GITHUB_ENV
-
-    - name: Get current date
-      run: |
-        CURRENT_DATE=$(date +%s)
-        echo "Current date: $CURRENT_DATE"
-        echo "CURRENT_DATE=$CURRENT_DATE" >> $GITHUB_ENV
-
-    - name: Compare image tags in dev and prd
-      run: |
-        set -e
-        mismatched_dirs=()
-        details=""
-
-        echo "Checking directories for image tag mismatches..."
-        for dir in */; do
-          dir="${dir%/}"
-          if [[ -d "$dir/base" && -d "$dir/patches" && -d "$dir/patches/dev" && -d "$dir/patches/prd" ]]; then
-            echo "Analyzing $dir"
-            dev_yaml="$dir/patches/dev/kustomization.yaml"
-            prd_yaml="$dir/patches/prd/kustomization.yaml"
-            if [[ -f "$dev_yaml" && -f "$prd_yaml" ]]; then
-              echo "If condition pass"
-              dev_images=$(yq e '.images[] | .name + "=" + .newTag' "$dev_yaml" | sort)
-              prd_images=$(yq e '.images[] | .name + "=" + .newTag' "$prd_yaml" | sort)
-              diff_result=$(diff <(echo "$dev_images") <(echo "$prd_images")|| true)
-              if [[ "$diff_result" != "" ]]; then
-                echo "diff_result condition pass"
-                echo "Image tag mismatch in $dir:"
-                mismatched_dirs+=("$dir")
-                details+="In $dir:\\n"
-                while IFS= read -r line; do
-                  if [[ "$line" =~ "<" ]]; then
-                    image_name=$(echo "$line" | cut -d '=' -f 1 | tr -d '< ')
-                    dev_tag=$(echo "$line" | cut -d '=' -f 2)
-                    prd_tag=$(grep "$image_name=" <(echo "$prd_images") | cut -d '=' -f 2)
-                    details+="  - $image_name: $dev_tag in dev, $prd_tag in prd\\n"
-                  fi
-                done <<< "$diff_result"
-              fi
-            fi
-          fi
-        done
-        if [ ${#mismatched_dirs[@]} -gt 0 ]; then
-          printf '%s\n' "${mismatched_dirs[@]}"
-          printf '%b\n' "${details}"
-
-        else
-          echo "No mismatches found, or all missing images sections were skipped."
-        fi
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: "3.10"
+      - name: Install Python Dependencies
+        working-directory: scripts
+        run: pip install -r requirements.txt
