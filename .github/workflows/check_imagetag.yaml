@@ -19,3 +19,8 @@ jobs:
       - name: Install Python Dependencies
         working-directory: .
         run: pip install -r requirements.txt
+      - name: Generate Changeset
+        id: generate_changeset
+        env:
+          GITHUB_BASE_REF: ${{ github.event.pull_request.base.ref || 'main' }}
+        run: ./scripts/github-changeset.sh
