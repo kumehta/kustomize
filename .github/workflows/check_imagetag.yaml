@@ -22,5 +22,5 @@ jobs:
       - name: Generate Changeset
         id: generate_changeset
         env:
-          REPO_REF: ${{ github.event.pull_request.base.ref }}
+          REPO_REF: ${{ github.event.pull_request.base.ref || github.event.comment.base.ref }}
         run: ./scripts/github-changeset.sh
