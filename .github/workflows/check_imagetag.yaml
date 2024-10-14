@@ -22,5 +22,5 @@ jobs:
       - name: Generate Changeset
         id: generate_changeset
         env:
-          REPO_REF: 'master'
+          REPO_REF: ${{ github.event.pull_request.base.ref || 'main' }}
         run: ./scripts/github-changeset.sh
