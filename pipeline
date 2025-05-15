@@ -1,0 +1,96 @@
+stages:
+  - build
+  - deploy
+
+default:
+  image: python:3.10-alpine
+  before_script:
+    - apk add --no-cache zip curl jq bash
+    - pip install awscli
+  interruptible: true
+
+variables:
+  TEMPLATE_FILE: "config/template.conf"
+  PACKAGE_DATE: "$(date +%Y%m%d)"
+  PACKAGE_NAME: "codebase_${PACKAGE_DATE}_${CI_PIPELINE_ID}.zip"
+  ARTIFACT_BUCKET_QA: "your-qa-bucket"
+  ARTIFACT_BUCKET_PROD: "your-prod-bucket"
+
+build_package:
+  stage: build
+  script:
+    - echo "📦 Starting packaging process..."
+
+    # Detect environment based on MR target
+    - |
+      case "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" in
+        development)
+          export DEPLOY_ENV="qa"
+          ;;
+        main)
+          export DEPLOY_ENV="prod"
+          ;;
+        *)
+          echo "❌ Unsupported target branch: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+          exit 1
+          ;;
+      esac
+
+    # Extract region from MR label
+    - |
+      echo "🌍 Extracting region from MR labels..."
+      MR_API_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}"
+      REGION_LABEL=$(curl --silent --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$MR_API_URL" \
+        | jq -r '.labels[]' | grep -E '^region:' | head -n1)
+
+      if [[ -z "$REGION_LABEL" ]]; then
+        echo "❌ Missing region label (expected: region:<aws-region>)"
+        exit 1
+      fi
+
+      REGION="${REGION_LABEL#region:}"
+      echo "✅ REGION = $REGION | ENVIRONMENT = $DEPLOY_ENV"
+
+    # Replace placeholders in template
+    - |
+      echo "📝 Replacing variables in $TEMPLATE_FILE"
+      sed -i "s/{{ENVIRONMENT}}/$DEPLOY_ENV/g" "$TEMPLATE_FILE"
+      sed -i "s/{{REGION}}/$REGION/g" "$TEMPLATE_FILE"
+
+    # Zip the codebase
+    - echo "📦 Zipping codebase into $PACKAGE_NAME"
+    - zip -r "$PACKAGE_NAME" . -x ".git/*" ".gitlab/*"
+
+  artifacts:
+    paths:
+      - $PACKAGE_NAME
+    expire_in: 1 day
+  only:
+    - merge_requests
+  allow_failure: false
+
+deploy_qa:
+  stage: deploy
+  script:
+    - echo "🚀 Deploying to QA environment..."
+    - aws s3 cp "$PACKAGE_NAME" "s3://$ARTIFACT_BUCKET_QA/$PACKAGE_NAME"
+    - echo "✅ QA deployment complete: $PACKAGE_NAME"
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"'
+  dependencies:
+    - build_package
+  allow_failure: false
+
+deploy_prod:
+  stage: deploy
+  script:
+    - echo "🚀 Deploying to PRODUCTION environment..."
+    - aws s3 cp "$PACKAGE_NAME" "s3://$ARTIFACT_BUCKET_PROD/$PACKAGE_NAME"
+    - echo "✅ Production deployment complete: $PACKAGE_NAME"
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+  when: manual
+  allow_failure: false
+  dependencies:
+    - build_package
+  protected: true  # optional, enforce role-based deploy access
